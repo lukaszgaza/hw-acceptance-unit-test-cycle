@@ -3,11 +3,15 @@ require 'rails_helper'
 describe MoviesController do
   describe 'find movies with the same director' do
     it "should call the appropriate model's method to return similar_movies movies" do
-      expect(Movie).to receive(:find_by_the_same_director_as).with("1").and_return("some")
+      fake_movie = double('movie1', title: 'title')
+      allow(Movie).to receive(:find_by_id).and_return(fake_movie)
+      expect(Movie).to receive(:find_by_the_same_director_as).with("title").and_return("some")
       get :similar_movies, id: "1"
     end
 
     it "should return appropriate template to be rendered" do
+      fake_movie = double('movie1', title: 'title')
+      allow(Movie).to receive(:find_by_id).and_return(fake_movie)
       allow(Movie).to receive(:find_by_the_same_director_as).and_return("some")
       get :similar_movies, {id: "1"}
       expect(response).to render_template('similar_movies')
@@ -15,6 +19,8 @@ describe MoviesController do
 
     it "should access the similar_movies movies to display them on the template" do
       fake_results = [double('movie1'), double('movie2')]
+      fake_movie = double('movie1', title: 'title')
+      allow(Movie).to receive(:find_by_id).and_return(fake_movie)
       allow(Movie).to receive(:find_by_the_same_director_as).and_return(fake_results)
       get :similar_movies, {id: "1"}
 
