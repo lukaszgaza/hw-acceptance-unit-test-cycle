@@ -8,18 +8,24 @@ describe MoviesController do
     end
 
     it "should return appropriate template to be rendered" do
-      allow(Movie).to receive(:find_by_the_same_director_as)
+      allow(Movie).to receive(:find_by_the_same_director_as).and_return("some")
       get :similar_movies, {id: "1"}
       expect(response).to render_template('similar_movies')
     end
 
     it "should access the similar_movies movies to display them on the template" do
-      @fake_results = [double('movie1'), double('movie2')]
-      allow(Movie).to receive(:find_by_the_same_director_as).and_return(@fake_results)
+      fake_results = [double('movie1'), double('movie2')]
+      allow(Movie).to receive(:find_by_the_same_director_as).and_return(fake_results)
       get :similar_movies, {id: "1"}
 
-      # checking instance variables in the tests is IMHO bad idea
-      #expect assigns(:similar).to eq(@fake_results)
+      #expect(assigns(:similar)).to eql(fake_results)
+    end
+
+    it "should redirect to root path if there are no movies similar to the provided one" do
+      allow(Movie).to receive(:find_by_the_same_director_as).and_return(nil)
+      get :similar_movies, {id: "no-similar"}
+
+      expect(response).to redirect_to(root_url)
     end
   end
 end
