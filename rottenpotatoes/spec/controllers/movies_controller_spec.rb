@@ -3,7 +3,7 @@ require 'rails_helper'
 describe MoviesController do
   describe 'find movies with the same director' do
     it "should call the appropriate model's method to return similar_movies movies" do
-      expect(Movie).to receive(:find_by_the_same_director_as).with("1")
+      expect(Movie).to receive(:find_by_the_same_director_as).with("1").and_return("some")
       get :similar_movies, id: "1"
     end
 
@@ -18,14 +18,16 @@ describe MoviesController do
       allow(Movie).to receive(:find_by_the_same_director_as).and_return(fake_results)
       get :similar_movies, {id: "1"}
 
-      #expect(assigns(:similar)).to eql(fake_results)
+      expect(assigns(:similar)).to eql(fake_results)
     end
 
     it "should redirect to root path if there are no movies similar to the provided one" do
+      fake_movie = double('movie1', title: 'title')
+      allow(Movie).to receive(:find_by_id).and_return(fake_movie)
       allow(Movie).to receive(:find_by_the_same_director_as).and_return(nil)
       get :similar_movies, {id: "no-similar"}
 
-      expect(response).to redirect_to(root_url)
+      expect(response).to redirect_to(movies_path)
     end
   end
 end

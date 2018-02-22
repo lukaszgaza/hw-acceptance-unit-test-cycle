@@ -1,2 +1,4 @@
 rottenpotatoes/.idea/
 rottenpotatoes/tmp/
+rottenpotatoes/coverage/
+.bundle/
