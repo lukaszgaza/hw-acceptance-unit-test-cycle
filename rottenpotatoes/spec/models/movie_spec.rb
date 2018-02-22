@@ -13,7 +13,7 @@ describe Movie do
     end
 
     it 'should find similar movies when director exists' do
-      expect(Movie.find_by_the_same_director_as(movie1.title)).to eql([movie1, movie4])
+      expect(Movie.find_by_the_same_director_as(movie1.title).map(&:title)).to eql(['Star Wars', 'THX-1138'])
       expect(Movie.find_by_the_same_director_as(movie1.title)).to_not include([movie2])
     end
 
